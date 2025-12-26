@@ -1,3 +1,3 @@
-export type { BookCardType } from './BookCard.ts'
-export type { FilterParams } from './FilterParams.ts'
-export type { Option } from './Option.ts'
+export type { BookCardType } from './bookCard.ts'
+export type { FilterParamsType } from './filterParams.ts'
+export type { OptionType } from './option.ts'

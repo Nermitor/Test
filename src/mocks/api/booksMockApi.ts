@@ -1,13 +1,12 @@
-import { mockResponse } from '@/mocks'
-import { booksMock } from '@/mocks'
-import type { BookCardType, FilterParams } from '@/types'
+import { mockResponse, booksMock } from '@/mocks'
+import type { BookCardType, FilterParamsType } from '@/types'
 
 export type PayloadType = {
   sort: string
   search: string
   page: number
   limit: number
-  filters?: FilterParams
+  filters?: FilterParamsType
 }
 
 const fetchBooks = (payload: PayloadType) => {

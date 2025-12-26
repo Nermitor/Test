@@ -1,4 +1,4 @@
-export type FilterParams = {
+export type FilterParamsType = {
   year?: [number, number]
   pages?: [number, number]
   readers?: [number, number]

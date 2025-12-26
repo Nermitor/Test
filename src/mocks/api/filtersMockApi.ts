@@ -1,8 +1,7 @@
-import { mockResponse } from '@/mocks'
-import { booksMock } from '@/mocks'
-import type { FilterParams } from '@/types'
+import { mockResponse, booksMock } from '@/mocks'
+import type { FilterParamsType } from '@/types'
 
-const fetchFilterParams = (): Promise<FilterParams> => {
+const fetchFilterParams = (): Promise<FilterParamsType> => {
   const { year, pages, readers } = booksMock.reduce(
     (acc, book) => {
       acc.year.push(book.year)

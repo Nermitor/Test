@@ -36,7 +36,7 @@
 import { type LocationQueryRaw, useRoute, useRouter } from 'vue-router'
 import { computed, onBeforeMount, ref, watch } from 'vue'
 
-import type { BookCardType, FilterParams, Option } from '@/types'
+import type { BookCardType, FilterParamsType, OptionType } from '@/types'
 import { booksMockApi, filtersMockApi, optionsMockApi } from '@/mocks'
 import { isRangeDifferent, parseRange } from '@/utils'
 
@@ -45,9 +45,9 @@ const router = useRouter()
 
 const search = ref((route.query.search as string) ?? '')
 const page = ref(Number(route.query.page) || 1)
-const sort = ref((route.query.sort as string) ?? 'readers_desc')
+const sort = ref<string>((route.query.sort as string) ?? '')
 
-const filters = ref<FilterParams>({
+const filters = ref<FilterParamsType>({
   year: parseRange(route.query.year as string | undefined),
   pages: parseRange(route.query.pages as string | undefined),
   readers: parseRange(route.query.readers as string | undefined),
@@ -56,11 +56,11 @@ const filters = ref<FilterParams>({
 })
 
 const data = ref<BookCardType[]>()
-const sortOptions = ref<Option[]>([])
+const sortOptions = ref<OptionType[]>([])
 const pagesCount = ref<number>()
 const defaultSort = ref<string>()
 const showFilters = ref(false)
-const defaultFilterParams = ref<FilterParams | null>(null)
+const defaultFilterParams = ref<FilterParamsType | null>(null)
 const loading = ref(false)
 const filtersApplied = ref(false)
 
@@ -168,6 +168,7 @@ const fetchOptions = async () => {
   try {
     sortOptions.value = await optionsMockApi.fetchOptions()
     defaultSort.value = sortOptions.value[0]?.value
+    sort.value = defaultSort.value ?? ''
   } catch (error) {
     console.error('Failed to fetch options:', error)
   }

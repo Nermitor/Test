@@ -1,5 +1,4 @@
-import { mockResponse } from '@/mocks'
-import { optionsMock } from '@/mocks'
+import { mockResponse, optionsMock } from '@/mocks'
 
 const fetchOptions = () => {
   return mockResponse(optionsMock)

@@ -69,16 +69,16 @@ el-dialog(
 </template>
 
 <script setup lang="ts">
-import type { FilterParams } from '@/types'
+import type { FilterParamsType } from '@/types'
 
 type Props = {
-  filterParams: FilterParams | null
+  filterParams: FilterParamsType | null
 }
 
 const props = defineProps<Props>()
 
 const visible = defineModel<boolean>({ required: true })
-const filters = defineModel<FilterParams>('filters', { required: true })
+const filters = defineModel<FilterParamsType>('filters', { required: true })
 
 const emit = defineEmits<{
   apply: []

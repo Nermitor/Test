@@ -1,6 +1,6 @@
-import type { Option } from '@/types'
+import type { OptionType } from '@/types'
 
-export const optionsMock: Option[] = [
+export const optionsMock: OptionType[] = [
   {
     value: 'readers_desc',
     label: 'Количество читателей по убыванию',
