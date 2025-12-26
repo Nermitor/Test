@@ -11,7 +11,7 @@ export type PayloadType = {
 
 const fetchBooks = (payload: PayloadType) => {
   if (!payload.sort || !payload.sort.includes('_')) {
-    console.log('Invalid sort parameter:', payload.sort)
+    console.error('Invalid sort parameter:', payload.sort)
     return mockResponse({ books: [], total: 0 })
   }
   const [field, dir] = payload.sort.split('_') as [keyof BookCardType, string]
