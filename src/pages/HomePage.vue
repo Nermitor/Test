@@ -21,7 +21,10 @@
               :label="option.label"
               :value="option.value")
         .home-page__cards(v-loading="loading")
-          v-book-card(v-for="book in data" :key="book.id" :book="book" )
+          template(v-if="data && data.length > 0")
+            v-book-card(v-for="book in data" :key="book.id" :book="book")
+          .home-page__empty(v-else-if="!loading")
+            | Ничего не найдено, попробуйте изменить фильтры
         .home-page__pagination
           el-pagination(v-model:current-page="page" @change="onPageChange" layout="prev, pager, next" :total="pagesCount")
       v-filters(
@@ -168,7 +171,9 @@ const fetchOptions = async () => {
   try {
     sortOptions.value = await optionsMockApi.fetchOptions()
     defaultSort.value = sortOptions.value[0]?.value
-    sort.value = defaultSort.value ?? ''
+    if (!sort.value && defaultSort.value) {
+      sort.value = defaultSort.value
+    }
   } catch (error) {
     console.error('Failed to fetch options:', error)
   }
@@ -255,5 +260,12 @@ onBeforeMount(async () => {
   gap: 10px;
   margin-bottom: 40px;
   max-width: 350px;
+}
+
+.home-page__empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--el-text-color-secondary);
+  font-size: 16px;
 }
 </style>

@@ -18,6 +18,17 @@ const fetchFilterParams = (): Promise<FilterParamsType> => {
     { value: 'EN' as const, label: 'Английский' },
   ]
 
+  if (year.length === 0 || pages.length === 0 || readers.length === 0) {
+    console.error('No books data available')
+    return mockResponse({
+      year: [0, 0],
+      pages: [0, 0],
+      readers: [0, 0],
+      publishers: [],
+      languages: [],
+    })
+  }
+
   return mockResponse({
     year: [Math.min(...year), Math.max(...year)],
     pages: [Math.min(...pages), Math.max(...pages)],

@@ -23,7 +23,7 @@ el-dialog(
         style="width: 100%"
       )
         el-option(
-          v-for="lang in props.filterParams?.languages"
+          v-for="lang in props.filterParams?.languages ?? []"
           :key="lang.value"
           :label="lang.label"
           :value="lang.value"
@@ -36,7 +36,7 @@ el-dialog(
         style="width: 100%"
       )
         el-option(
-          v-for="pub in props.filterParams?.publishers"
+          v-for="pub in props.filterParams?.publishers ?? []"
           :key="pub"
           :label="pub"
           :value="pub"
