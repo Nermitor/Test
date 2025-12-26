@@ -46,16 +46,16 @@ import { isRangeDifferent, parseRange } from '@/utils'
 const route = useRoute()
 const router = useRouter()
 
-const search = ref((route.query.search as string) ?? '')
-const page = ref(Number(route.query.page) || 1)
-const sort = ref<string>((route.query.sort as string) ?? '')
+const search = ref('')
+const page = ref(1)
+const sort = ref<string>('')
 
 const filters = ref<FilterParamsType>({
-  year: parseRange(route.query.year as string | undefined),
-  pages: parseRange(route.query.pages as string | undefined),
-  readers: parseRange(route.query.readers as string | undefined),
-  language: (route.query.language as 'RU' | 'EN') || undefined,
-  publisher: (route.query.publisher as string) || undefined,
+  year: undefined,
+  pages: undefined,
+  readers: undefined,
+  language: undefined,
+  publisher: undefined,
 })
 
 const data = ref<BookCardType[]>()
@@ -197,6 +197,58 @@ const restoreFiltersFromQuery = () => {
   }
 }
 
+const validateAndCleanQuery = (): LocationQueryRaw | null => {
+  const query = { ...route.query } as LocationQueryRaw
+  let hasChanges = false
+
+  if (query.sort) {
+    const sortValue = query.sort as string
+    const isValidSort = sortOptions.value.some((opt) => opt.value === sortValue)
+    if (!isValidSort) {
+      delete query.sort
+      hasChanges = true
+    }
+  }
+
+  const rangeFields = ['year', 'pages', 'readers'] as const
+  rangeFields.forEach((field) => {
+    if (query[field]) {
+      const parsed = parseRange(query[field] as string | undefined)
+      if (!parsed) {
+        delete query[field]
+        hasChanges = true
+      }
+    }
+  })
+
+  if (query.language) {
+    const lang = query.language as string
+    if (lang !== 'RU' && lang !== 'EN') {
+      delete query.language
+      hasChanges = true
+    }
+  }
+
+  if (query.publisher && defaultFilterParams.value) {
+    const publisher = query.publisher as string
+    const isValidPublisher = defaultFilterParams.value.publishers?.some((p) => p === publisher)
+    if (!isValidPublisher) {
+      delete query.publisher
+      hasChanges = true
+    }
+  }
+
+  if (query.page) {
+    const pageNum = Number(query.page)
+    if (isNaN(pageNum) || pageNum < 1) {
+      delete query.page
+      hasChanges = true
+    }
+  }
+
+  return hasChanges ? query : null
+}
+
 watch(showFilters, (newValue) => {
   if (newValue) {
     filtersApplied.value = false
@@ -208,9 +260,71 @@ watch(showFilters, (newValue) => {
   }
 })
 
+watch(
+  () => route.query,
+  () => {
+    if (sortOptions.value.length > 0 && defaultFilterParams.value) {
+      const cleanedQuery = validateAndCleanQuery()
+      if (cleanedQuery) {
+        router.replace({ query: cleanedQuery })
+        updateStateFromQuery(cleanedQuery)
+        return
+      }
+
+      updateStateFromQuery(route.query as LocationQueryRaw)
+    }
+  },
+  { deep: true },
+)
+
+const updateStateFromQuery = (query: LocationQueryRaw) => {
+  const querySort = query.sort as string | undefined
+  if (querySort) {
+    const isValidSort = sortOptions.value.some((opt) => opt.value === querySort)
+    if (isValidSort) {
+      sort.value = querySort
+    } else {
+      sort.value = defaultSort.value ?? ''
+    }
+  } else {
+    sort.value = defaultSort.value ?? ''
+  }
+
+  const queryPage = query.page
+  if (queryPage) {
+    const pageNum = Number(queryPage)
+    if (!isNaN(pageNum) && pageNum >= 1) {
+      page.value = pageNum
+    } else {
+      page.value = 1
+    }
+  } else {
+    page.value = 1
+  }
+
+  search.value = (query.search as string) ?? ''
+
+  filters.value = {
+    year: parseRange(query.year as string | undefined),
+    pages: parseRange(query.pages as string | undefined),
+    readers: parseRange(query.readers as string | undefined),
+    language: (query.language as 'RU' | 'EN') || undefined,
+    publisher: (query.publisher as string) || undefined,
+  }
+}
+
 onBeforeMount(async () => {
   await fetchFilterParams()
   await fetchOptions()
+
+  const cleanedQuery = validateAndCleanQuery()
+  if (cleanedQuery) {
+    await router.replace({ query: cleanedQuery })
+    updateStateFromQuery(cleanedQuery)
+  } else {
+    updateStateFromQuery(route.query as LocationQueryRaw)
+  }
+
   await fetchData()
 })
 </script>
