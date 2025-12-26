@@ -11,7 +11,7 @@ el-card(shadow="hover")
 </template>
 
 <script setup lang="ts">
-import type { BookCardType } from '@/types/BookCard.ts'
+import type { BookCardType } from '@/types'
 
 type Props = {
   book: BookCardType

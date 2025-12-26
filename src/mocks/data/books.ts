@@ -1,4 +1,4 @@
-import type { BookCardType } from '@/types/BookCard.ts'
+import type { BookCardType } from '@/types'
 
 export const books: BookCardType[] = [
   {
