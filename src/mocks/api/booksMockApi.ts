@@ -1,5 +1,5 @@
-import { mockResponse } from '@/mocks/api'
-import { books } from '@/mocks/data'
+import { mockResponse } from '@/mocks'
+import { booksMock } from '@/mocks'
 import type { BookCardType, FilterParams } from '@/types'
 
 export type PayloadType = {
@@ -14,7 +14,7 @@ const fetchBooks = (payload: PayloadType) => {
   const [field, dir] = payload.sort.split('_') as [keyof BookCardType, string]
 
   const searchLower = payload.search?.toLowerCase()
-  const filteredBooks = books.filter((book) => {
+  const filteredBooks = booksMock.filter((book) => {
     if (searchLower) {
       const matchesSearch =
         book.author.toLowerCase().includes(searchLower) ||

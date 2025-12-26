@@ -1,9 +1,9 @@
-import { mockResponse } from '@/mocks/api'
-import { books } from '@/mocks/data'
+import { mockResponse } from '@/mocks'
+import { booksMock } from '@/mocks'
 import type { FilterParams } from '@/types'
 
 const fetchFilterParams = (): Promise<FilterParams> => {
-  const { year, pages, readers } = books.reduce(
+  const { year, pages, readers } = booksMock.reduce(
     (acc, book) => {
       acc.year.push(book.year)
       acc.pages.push(book.pages)
@@ -13,7 +13,7 @@ const fetchFilterParams = (): Promise<FilterParams> => {
     { year: [], pages: [], readers: [] } as { year: number[]; pages: number[]; readers: number[] },
   )
 
-  const publishers = [...new Set(books.map((book) => book.publisher))].sort()
+  const publishers = [...new Set(booksMock.map((book) => book.publisher))].sort()
   const languages = [
     { value: 'RU' as const, label: 'Русский' },
     { value: 'EN' as const, label: 'Английский' },
